@@ -124,11 +124,12 @@ catch
     #Json script
 
 $jsonFileId = '1uPHaWK03wF6bCaianRvGHlNcBcWwjENW'
-Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$jsonFileId" -OutFile (Join-Path -Path $jsonFilePath -ChildPath "TLauncherAdditional.json")
+$jsonFile = Join-Path -Path $jsonFilePath -ChildPath 'TLauncherAdditional.json'
+Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$jsonFileId" -OutFile $jsonFile
 
-$json = Get-Content -Raw -Path ($jsonFilePath + "TLauncherAdditional.json") | ConvertFrom-Json
+$json = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json
 $json.modpack.name = "$namepath"
-$json | ConvertTo-Json -depth 32 -Compress | Set-Content -path $jsonFilePath
+$json | ConvertTo-Json -depth 32 -Compress | Set-Content -path $jsonFile
 
     #Extract
     
