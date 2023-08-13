@@ -75,7 +75,23 @@ function Get-File {
 
 $GoogleFileId = '1cXwUbdX2N3YDvLqogrt3JhJB7EZ_NYuA'
 $DownloadPath = Join-Path -Path $env:USERPROFILE -ChildPath 'downloads'
-$extractpath = Join-Path -path $env:APPDATA -ChildPath '.minecraft' | Join-Path -ChildPath 'versions' | Join-Path -ChildPath 'Hospicio' | Join-path -ChildPath 'mods'
+$versionspath = Join-Path -Path $env:APPDATA -ChildPath '.minecraft' | Join-path -ChildPath 'versions'
+
+    #Lista de pastas de versions
+
+$array = (Get-ChildItem -Path $versionspath -Directory).Name
+
+for ($i=0; $i -lt $Array.Length; $i++) {
+    $x = $i +1
+    $a = $Array[$i]
+    Write-Output "[$x] = $a"
+}
+
+$choice = Read-Host "escolha a pasta do tlauncher para aplicar o patch"
+$namepath = $array[$choice-1]
+$jsonFilePath = Join-Path -Path $versionspath -ChildPath "$namepath"
+$extractpath = Join-Path -Path $jsonFilePath -ChildPath 'mods'
+
 
 Write-Host "Preparando o download pelo google drive`n"
 
@@ -83,6 +99,7 @@ Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$GoogleFi
 
     # Get confirmation code from _tmp.txt
 
+$matches[0]
 $searchString = Select-String -Path "_tmp.txt" -Pattern "confirm="
 $searchString -match "confirm=(?<content>.*)&amp;id="
 $confirmCode = $matches['content']
@@ -105,8 +122,16 @@ catch
   Write-Output $_
   Start-Sleep
 }
+    #Json
+  
+Invoke-WebRequest -Uri 'https://drive.google.com/uc?export=download&id=1uPHaWK03wF6bCaianRvGHlNcBcWwjENW' -OutFile $jsonFilePath
+
+$json = Get-Content -Raw -Path ($jsonFilePath + "TLauncherAdditional.json") | ConvertFrom-Json
+$json.modpack.name = "$namepath"
+$json | ConvertTo-Json -depth 32 -Compress | Set-Content -path $jsonFilePath
 
     #Extract
-
+    
+Remove-Item -Path "$extractpath" -Recurse
 Expand-Archive -Force -LiteralPath "$FilePath" -DestinationPath $extractpath
 Remove-Item -LiteralPath "$FilePath" -Force
