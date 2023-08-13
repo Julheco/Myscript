@@ -99,7 +99,6 @@ Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$GoogleFi
 
     # Get confirmation code from _tmp.txt
 
-$matches[0]
 $searchString = Select-String -Path "_tmp.txt" -Pattern "confirm="
 $searchString -match "confirm=(?<content>.*)&amp;id="
 $confirmCode = $matches['content']
@@ -125,7 +124,7 @@ catch
     #Json script
 
 $jsonFileId = '1uPHaWK03wF6bCaianRvGHlNcBcWwjENW'
-Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$jsonFileId" -OutFile (Join-Path -Path $jsonFilePath -ChildPath '.\TLauncherAdditional.json')
+Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$jsonFileId" -OutFile (Join-Path -Path $jsonFilePath -ChildPath 'TLauncherAdditional.json')
 
 $json = Get-Content -Raw -Path ($jsonFilePath + "TLauncherAdditional.json") | ConvertFrom-Json
 $json.modpack.name = "$namepath"
