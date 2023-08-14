@@ -100,7 +100,7 @@ Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$GoogleFi
     # Get confirmation code from _tmp.txt
 
 $searchString = Select-String -Path "_tmp.txt" -Pattern "confirm="
-$searchString -match "confirm=(?<content>.*)&amp;id="
+$searchString[0] -match "confirm=(?<content>.*)&amp;id="
 $confirmCode = $matches['content']
 
     # Delete _tmp.txt
