@@ -74,7 +74,7 @@ function Get-File {
 }
 
 $GoogleFileId = '1cXwUbdX2N3YDvLqogrt3JhJB7EZ_NYuA'
-$DownloadPath = Join-Path -Path $env:USERPROFILE -ChildPath 'downloads'
+$DownloadPath = $env:TEMP
 $versionspath = Join-Path -Path $env:APPDATA -ChildPath '.minecraft' | Join-path -ChildPath 'versions'
 
     #Lista de pastas de versions
@@ -98,7 +98,8 @@ Write-Host "Preparando o download pelo google drive`n"
 Invoke-WebRequest -Uri "https://drive.google.com/uc?export=download&id=$GoogleFileId" -OutFile "_tmp.txt" -SessionVariable googleDriveSession
 
     # Get confirmation code from _tmp.txt
-
+    
+$ErrorActionPreference = 'silentlycontinue'
 $searchString = Select-String -Path "_tmp.txt" -Pattern "confirm="
 $searchString[0] -match "confirm=(?<content>.*)&amp;id="
 $confirmCode = $matches['content']
